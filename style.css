@@ -80,6 +80,12 @@ h3 {
   padding-bottom: 5px;
 }
 
+img {
+  max-width: 100%;
+  border-radius: 6px;
+  margin: 15px 0;
+}
+
 @media (max-width: 600px) {
   body {
     padding: 0;
