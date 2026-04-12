@@ -1,0 +1,81 @@
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 30px;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.leaderboard-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+.two-col-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 0 30px 30px;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.full-row {
+  padding: 0 30px 30px;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.upload-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 30px;
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.upload-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+}
+
+.upload-btn {
+  background-color: #1a1a2e;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.upload-btn:hover {
+  background-color: #e94560;
+}
+
+.data-attribution {
+  margin-top: 12px;
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.data-attribution a {
+  color: #aaa;
+  text-decoration: underline;
+}
+
+.data-attribution a:hover {
+  color: #ccc;
+}

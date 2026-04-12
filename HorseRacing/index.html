@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Horse Racing Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="horseracing.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  </head>
+  <body id="top">
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#sports">Sports</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+
+    <header id="hero">
+      <h1>Horse Racing</h1>
+      <p class="title-text">Research & Numbers from the global thoroughbred circuit.</p>
+    </header>
+
+    <div class="leaderboard-row">
+      <div class="leaderboard-card">
+        <h3>All Time Speed Rankings</h3>
+        <div id="alltime-speed"></div>
+      </div>
+      <div class="leaderboard-card">
+        <h3>2026 Speed Rankings</h3>
+        <div id="speed-2026"></div>
+      </div>
+      <div class="leaderboard-card">
+        <h3>2026 Kentucky Derby Qualification</h3>
+        <div id="derby-qual"></div>
+      </div>
+    </div>
+
+    <div class="full-row">
+      <div class="leaderboard-card">
+        <h3>Race Calendar</h3>
+        <div id="calendar"></div>
+      </div>
+    </div>
+
+    <p class="data-attribution" style="padding:0 30px; margin-bottom:8px;">
+      All data is edited for display purposes and may not reflect the most current results.
+    </p>
+
+    <div class="upload-panel">
+      <span class="upload-label">Update Data:</span>
+      <label class="upload-btn">All Time Speed <input type="file" accept=".xlsx" onchange="handleUpload(this.files[0], 'alltimeSpeed')" hidden></label>
+      <label class="upload-btn">2026 Speed <input type="file" accept=".xlsx" onchange="handleUpload(this.files[0], 'speed2026')" hidden></label>
+      <label class="upload-btn">Derby Qual <input type="file" accept=".xlsx" onchange="handleUpload(this.files[0], 'derbyQual')" hidden></label>
+      <label class="upload-btn">Calendar <input type="file" accept=".xlsx" onchange="handleUpload(this.files[0], 'calendar')" hidden></label>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="horseracing.js"></script>
+    <script src="../script.js"></script>
+  </body>
+</html>
