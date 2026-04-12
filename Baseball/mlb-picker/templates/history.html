@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}MLB Picker – Season History{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Season Record</h1>
+</div>
+
+<!-- Record summary cards -->
+<div class="record-summary">
+  <div class="record-stat">
+    <div class="stat-value wins">{{ record.W }}</div>
+    <div class="stat-label">Wins</div>
+  </div>
+  <div class="record-stat">
+    <div class="stat-value losses">{{ record.L }}</div>
+    <div class="stat-label">Losses</div>
+  </div>
+  {% if record.P %}
+  <div class="record-stat">
+    <div class="stat-value pushes">{{ record.P }}</div>
+    <div class="stat-label">Pushes</div>
+  </div>
+  {% endif %}
+  <div class="record-stat">
+    <div class="stat-value">{{ record.total }}</div>
+    <div class="stat-label">Total Picks</div>
+  </div>
+  <div class="record-stat">
+    <div class="stat-value">
+      {% if record.total %}
+        {{ "%.1f"|format(record.W / record.total * 100) }}%
+      {% else %}
+        —
+      {% endif %}
+    </div>
+    <div class="stat-label">Win %</div>
+  </div>
+  {% if record.pending %}
+  <div class="record-stat">
+    <div class="stat-value" style="color: var(--text-muted)">{{ record.pending }}</div>
+    <div class="stat-label">Pending</div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Pick history table -->
+{% if not picks %}
+  <div class="empty-state">
+    <h2>No picks yet</h2>
+    <p>Head to <a href="/" style="color: var(--accent)">Today's Games</a> to make your first pick.</p>
+  </div>
+{% else %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Matchup</th>
+          <th>Your Pick</th>
+          <th>Score</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in picks %}
+        <tr>
+          <td style="color: var(--text-muted); font-size: 13px;">{{ p['game_date'] }}</td>
+          <td>
+            <span style="font-weight:600;">{{ p['away_team_abbr'] }}</span>
+            <span style="color: var(--text-muted); font-size:12px;">({{ p['away_wins'] }}-{{ p['away_losses'] }})</span>
+            <span style="color: var(--text-muted); margin: 0 4px;">@</span>
+            <span style="font-weight:600;">{{ p['home_team_abbr'] }}</span>
+            <span style="color: var(--text-muted); font-size:12px;">({{ p['home_wins'] }}-{{ p['home_losses'] }})</span>
+          </td>
+          <td style="font-weight:500;">{{ p['picked_team_name'] }}</td>
+          <td style="font-size: 13px; color: var(--text-muted);">
+            {% if p['away_score'] is not none %}
+              {{ p['away_score'] }}–{{ p['home_score'] }}
+            {% else %}
+              —
+            {% endif %}
+          </td>
+          <td>
+            {% if p['result'] %}
+              <span class="result-badge result-{{ p['result'] }}">{{ p['result'] }}</span>
+            {% else %}
+              <span class="result-badge result-pending">Pending</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+{% endblock %}

@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <title>MILB Article Page</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="article.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../article.css">
+    <link rel="stylesheet" href="../style.css">
     <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
   </head>
   <body>
     <nav>
-      <a href="index.html#top">Home</a>
-      <a href="index.html#about">About</a>
-      <a href="index.html#sports">Sports</a>
-      <a href="index.html#projects">Projects</a>
-      <a href="index.html#contact">Contact</a>
+      <a href="../index.html#top">Home</a>
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#sports">Sports</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
     </nav>
     <header>
       <h1>Exploring Minor League Baseball Statistics to Project Major League All-Star Appearances</h1>
@@ -74,11 +74,11 @@
         <section class="article-section" id = "list-of-variables">
             <h2>List of Variables</h2>
             <p>Ex. of Batting Data (prior to cleaning):</p>
-            <img src="images/Batters1.png" alt="Batting statistics part 1">
-            <img src="images/Batters2.png" alt="Batting statistics part 2">
+            <img src="../images/Batters1.png" alt="Batting statistics part 1">
+            <img src="../images/Batters2.png" alt="Batting statistics part 2">
             <p>Ex. of Pitching Data (prior to cleaning):</p>
-            <img src="images/Pitchers1.png" alt="Pitching statistics part 1">
-            <img src="images/Pitchers2.png" alt="Pitching statistics part 2">
+            <img src="../images/Pitchers1.png" alt="Pitching statistics part 1">
+            <img src="../images/Pitchers2.png" alt="Pitching statistics part 2">
         </section>
 
         <section class="article-section" id = "preprocessing-data">
@@ -102,21 +102,21 @@
             <h2>Post Data Cleaning</h2>
             <p>After the data was cleaned and combined, we were left with four CSV files. The two training files contain pitchers and hitters who have made an All-Star game or are no longer active while the two new files contain active players who have not made an All-Star game appearance. There are 43057 individual players in the training batting file while there are 37164 individual players in the pitching training file. The new files contain the players that the models will be making predictions about. There are 4475 players in the batting file and 5007 players in the pitching file.</p>
             <p>EX. of Batting Data (post cleaning):</p>
-            <img src="images/BattersClean.png" alt="Batting statistics clean">
+            <img src="../images/BattersClean.png" alt="Batting statistics clean">
             <p>EX: of Pitching Data (post cleaning):</p>
-            <img src="images/PitchersClean.png" alt="Pitching statistics clean">
+            <img src="../images/PitchersClean.png" alt="Pitching statistics clean">
         </section>
 
         <section class="article-section" id = "exploratory-data-analysis">
             <h2>Exploratory Data Analysis</h2>
             <p>The distributions and summary statistics between all batters and future All-Star batters are fairly similar, but as expected, are slightly better for the All-Stars. This is seen by the fact that the quartiles, means, and medians are slightly better across statistics. Future All-Stars performed better on average than their non-All-Star peers across all of the rate statistics compiled.  For each of these main rate statistics, a two sample t-test was completed to see if there was a statistically significant difference between the means of these stats for non-All-Stars and the All-Stars. Below is the summary table listing the t-value outcome for each test. As can be seen these results suggest a statistically significant difference between the performance of future All-Star and non-future All-Star batters during their minor league years.</p>
-            <img src="images/EDAchart.png" alt="Summary Statistics">
-            <img src="images/EDAbars.png" alt="Statistics Distribution">
-            <img src="images/EDAtval.png" alt="Statistics T-Values">
+            <img src="../images/EDAchart.png" alt="Summary Statistics">
+            <img src="../images/EDAbars.png" alt="Statistics Distribution">
+            <img src="../images/EDAtval.png" alt="Statistics T-Values">
             <p>Similar to the batting statistics, the future All-Star statistics are slightly better than the non-future All-Star players. As a pitcher, you want all of these values to be lower, with the exception of “Strikeouts per 9”, which pitchers want to have higher rates of. Future All-Stars perform better in each of these stats with the exception of the 1st quartile and median of “Home Runs per 9”, which are higher for future All-Star pitchers. As with the batting statistics, t-tests were done to test if there was a statistically significant difference between the All-Stars and non-All-Stars. As can be seen, just as with the batters, the t-scores that result from each of the respective t-tests suggest that there is a statistically significant difference between the All-Stars and non-All-Stars.</p>
-            <img src="images/EDAchartP.png" alt="Summary Statistics Pitchers">
-            <img src="images/EDAbarsP.png" alt="Statistics Distribution Pitchers">
-            <img src="images/EDAtvalP.png" alt="Statistics T-Values Pitchers">
+            <img src="../images/EDAchartP.png" alt="Summary Statistics Pitchers">
+            <img src="../images/EDAbarsP.png" alt="Statistics Distribution Pitchers">
+            <img src="../images/EDAtvalP.png" alt="Statistics T-Values Pitchers">
         </section>
 
         <section class="article-section" id = "modeling-approaches">
@@ -140,8 +140,8 @@
             <p>K10 training 10-fold MSE Pitching = 0.0155</p>
             <p>K5 training 10-fold MSE Batting = 0.0196</p>
             <p>K10 training 10-fold MSE Batting = 0.0183</p>
-            <img src="images/BattingKNN.png" alt="KNN Batting Results">
-            <img src="images/PitchingKNN.png" alt="KNN Pitching Results">
+            <img src="../images/BattingKNN.png" alt="KNN Batting Results">
+            <img src="../images/PitchingKNN.png" alt="KNN Pitching Results">
         </section>
 
         <section class="article-section" id = "lda">
@@ -161,7 +161,7 @@
         <section class="article-section" id = "trees-random-forests">
             <h2>Trees/Random Forests</h2>
             <p>We tried to implement a decision tree on the data to see if there was any way that it could help with the classification imbalance. We thought that this could be the case because the way that trees are built should implicitly solve a data imbalance. It is dividing based on the outcome using the variables, but instead the basic non-pruned tree did not have many levels and instead returned no All-Star for every classification. Then to see if a more complex dataset would provide valid predictions, we then tried random forests. We found that random forests were able to classify some players as future All-Stars and so we implemented them on our dataset. Random forests are useful for classification problems with large data sets. They are not susceptible to outliers and are a more versatile way to make predictions, this is important because as can be seen in the histograms, there are some outliers in our dataset. Random forests are similar to KNN, but it uses the general training population statistics to make divides rather than just looking at the nearest neighbors of the new data point. For the batting and pitching data, we tried all possible values for the mtry values in the random forest function to compare the predictions and ensure that the best model is used for the final predictions. As can be seen in the training MSE this model does seem to overfit especially for the pitching data. This will affect how we interpret the results from these models.</p>
-            <img src="images/RandomTrees.png" alt="Random Trees">
+            <img src="../images/RandomTrees.png" alt="Random Trees">
             <p>RF1 Pitching Training MSE = 0.003</p>
             <p>RF2 Pitching Training MSE = 0</p>
             <p>RF3 Pitching Training MSE = 0</p>
@@ -202,7 +202,7 @@
       <p>Email: streamlkg@gmail.com</p>
     </section>
 
-    <script src="script.js"></script>
+    <script src="../script.js"></script>
   
   </body>
 </html>

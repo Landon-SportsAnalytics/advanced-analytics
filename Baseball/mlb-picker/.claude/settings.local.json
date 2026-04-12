@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip show:*)",
+      "Bash(py:*)",
+      "WebFetch(domain:statsapi.mlb.com)",
+      "Bash(pip install:*)",
+      "Bash(python mlb_api.py)",
+      "Bash(python -c \"import database; database.init_db\\(\\); print\\('DB init OK'\\)\")",
+      "Bash(python -c ':*)",
+      "Bash(python field_svg.py)",
+      "Bash(python -c \"import app\")",
+      "Bash(python app.py)",
+      "Bash(curl -s http://localhost:5000)"
+    ]
+  }
+}

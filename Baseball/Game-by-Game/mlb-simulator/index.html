@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MLB Season Simulator</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .site-nav {
+      background: #0d1320;
+      border-bottom: 1px solid #1f2d44;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 48px;
+      font-size: 13px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .site-nav-links { display: flex; gap: 2px; }
+    .site-nav a { color: #94a3b8; text-decoration: none; padding: 5px 10px; border-radius: 6px; transition: color .15s, background .15s; }
+    .site-nav a:hover { color: #e2e8f0; background: #1a2235; }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="site-nav-links">
+      <a href="../../../index.html">Home</a>
+      <a href="../../../index.html#about">About</a>
+      <a href="../../../index.html#sports">Sports</a>
+      <a href="../../../index.html#projects">Projects</a>
+      <a href="../../../index.html#contact">Contact</a>
+    </div>
+    <a href="../../index.html">← Baseball</a>
+  </nav>
+  <header>
+    <div class="header-inner">
+      <div class="header-logo">⚾</div>
+      <div>
+        <h1>MLB Season Simulator</h1>
+        <p class="subtitle">Monte Carlo · At-Bat by At-Bat · All 30 Teams</p>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="watch">Watch Game</button>
+    <button class="tab-btn" data-tab="montecarlo">Monte Carlo</button>
+    <button class="tab-btn" data-tab="standings">Standings</button>
+    <button class="tab-btn" data-tab="teams">Teams</button>
+  </nav>
+
+  <main>
+
+    <!-- ══════════ WATCH GAME TAB ══════════ -->
+    <section id="watch" class="tab-content active">
+      <div class="watch-setup">
+        <div class="team-selector">
+          <label>Away Team</label>
+          <select id="awayTeamSelect"></select>
+        </div>
+        <div class="vs-badge">VS</div>
+        <div class="team-selector">
+          <label>Home Team</label>
+          <select id="homeTeamSelect"></select>
+        </div>
+        <div class="game-controls">
+          <button id="startGameBtn" class="btn-primary">▶ Start Game</button>
+          <button id="stepBtn" class="btn-secondary" disabled>Next At-Bat</button>
+          <button id="autoBtn" class="btn-secondary" disabled>Auto Play</button>
+          <select id="speedSelect" disabled>
+            <option value="900">Slow</option>
+            <option value="450" selected>Medium</option>
+            <option value="150">Fast</option>
+            <option value="30">Very Fast</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="gameDisplay" style="display:none">
+        <!-- SCOREBOARD -->
+        <div class="scoreboard-wrap">
+          <table class="scoreboard" id="scoreboard">
+            <thead>
+              <tr>
+                <th class="team-col">Team</th>
+                <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+                <th>6</th><th>7</th><th>8</th><th>9</th>
+                <th class="totals">R</th>
+                <th class="totals">H</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="awayScoreRow">
+                <td class="team-col" id="awayTeamLabel">-</td>
+                <td id="a1"></td><td id="a2"></td><td id="a3"></td><td id="a4"></td><td id="a5"></td>
+                <td id="a6"></td><td id="a7"></td><td id="a8"></td><td id="a9"></td>
+                <td class="totals" id="awayR">0</td>
+                <td class="totals" id="awayH">0</td>
+              </tr>
+              <tr id="homeScoreRow">
+                <td class="team-col" id="homeTeamLabel">-</td>
+                <td id="h1"></td><td id="h2"></td><td id="h3"></td><td id="h4"></td><td id="h5"></td>
+                <td id="h6"></td><td id="h7"></td><td id="h8"></td><td id="h9"></td>
+                <td class="totals" id="homeR">0</td>
+                <td class="totals" id="homeH">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- GAME STATE + FIELD + AT-BAT INFO -->
+        <div class="game-mid">
+
+          <!-- Field / Diamond -->
+          <div class="field-panel">
+            <div class="inning-status">
+              <span id="inningLabel">Top 1st</span>
+              <div class="outs-row">
+                <span class="outs-label">Outs:</span>
+                <div class="out-dot" id="out1"></div>
+                <div class="out-dot" id="out2"></div>
+                <div class="out-dot" id="out3"></div>
+              </div>
+            </div>
+
+            <div class="diamond-container">
+              <div class="diamond">
+                <div class="base-2b base" id="base2"></div>
+                <div class="base-row">
+                  <div class="base-3b base" id="base3"></div>
+                  <div class="pitcher-dot"></div>
+                  <div class="base-1b base" id="base1"></div>
+                </div>
+                <div class="home-plate"></div>
+              </div>
+            </div>
+
+            <div class="lineup-display">
+              <div class="lineup-col">
+                <div class="lineup-header" id="awayLineupHeader">Away Lineup</div>
+                <ol id="awayLineupList" class="lineup-list"></ol>
+              </div>
+              <div class="lineup-col">
+                <div class="lineup-header" id="homeLineupHeader">Home Lineup</div>
+                <ol id="homeLineupList" class="lineup-list"></ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- At-Bat Info -->
+          <div class="atbat-panel">
+            <div class="matchup-card">
+              <div class="matchup-side">
+                <div class="matchup-role">⚾ At Bat</div>
+                <div class="matchup-name" id="batterName">—</div>
+                <div class="matchup-pos" id="batterPos">—</div>
+                <div class="matchup-stats" id="batterStats">—</div>
+              </div>
+              <div class="matchup-divider">VS</div>
+              <div class="matchup-side">
+                <div class="matchup-role">🔥 Pitching</div>
+                <div class="matchup-name" id="pitcherName">—</div>
+                <div class="matchup-stats" id="pitcherStats">—</div>
+                <div class="pitch-count-display" id="pitchCount">Pitches: 0</div>
+              </div>
+            </div>
+
+            <!-- Play by Play -->
+            <div class="pbp-panel">
+              <div class="pbp-header">Play by Play</div>
+              <div id="playLog" class="play-log"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ MONTE CARLO TAB ══════════ -->
+    <section id="montecarlo" class="tab-content">
+      <div class="mc-header">
+        <h2>Monte Carlo Season Simulation</h2>
+        <p>Simulate hundreds of full 162-game seasons to calculate playoff probabilities, division win percentages, and expected win totals for all 30 teams.</p>
+      </div>
+
+      <div class="mc-controls">
+        <label class="control-label">
+          Simulations:
+          <select id="simCount">
+            <option value="10">10 (Instant)</option>
+            <option value="50">50 (Fast)</option>
+            <option value="100" selected>100</option>
+            <option value="250">250</option>
+            <option value="500">500 (Slow)</option>
+          </select>
+        </label>
+        <button id="runMCBtn" class="btn-primary">▶ Run Simulations</button>
+      </div>
+
+      <div id="mcProgress" style="display:none" class="progress-wrap">
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+        <div id="progressText" class="progress-text">Simulating season 0 / 100...</div>
+      </div>
+
+      <div id="mcResults" style="display:none">
+        <div class="results-tabs">
+          <button class="results-tab-btn active" data-league="AL">American League</button>
+          <button class="results-tab-btn" data-league="NL">National League</button>
+        </div>
+        <div id="mcTable"></div>
+        <div class="mc-note">* Playoff = Division Win OR Wild Card. WS Win = World Series Champion.</div>
+      </div>
+    </section>
+
+    <!-- ══════════ STANDINGS TAB ══════════ -->
+    <section id="standings" class="tab-content">
+      <div class="standings-controls">
+        <button id="simSingleBtn" class="btn-primary">▶ Simulate One Full Season</button>
+        <span id="standingsSeason" class="season-label"></span>
+      </div>
+      <div id="standingsDisplay">
+        <p class="placeholder-msg">Click "Simulate One Full Season" to generate standings.</p>
+      </div>
+    </section>
+
+    <!-- ══════════ TEAMS TAB ══════════ -->
+    <section id="teams" class="tab-content">
+      <div class="teams-controls">
+        <label class="control-label">Browse Team:
+          <select id="teamBrowseSelect"></select>
+        </label>
+      </div>
+      <div id="teamDisplay"></div>
+    </section>
+
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Advanced Analytics Home Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="cycling.css">
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  </head>
+  <body id = "top">
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#sports">Sports</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    
+    <header id = "hero">
+      <h1>Cycling</h1>
+      <p class="title-text">Research & Numbers from the professional peloton.</p>
+    </header>
+    
+    <div class="leaderboard-row">
+      <div class="leaderboard-card">
+        <h3>Overall Rankings</h3>
+        <div id="overall-rankings"></div>
+      </div>
+      <div class="leaderboard-card">
+        <h3>One Day Rankings</h3>
+        <div id="oneday-rankings"></div>
+      </div>
+      <div class="leaderboard-card">
+        <h3>Stage Rankings</h3>
+        <div id="stage-rankings"></div>
+      </div>
+    </div>
+
+    <div class="two-col-row">
+      <div class="leaderboard-card">
+        <h3>VAM Rankings</h3>
+        <div id="vam-rankings"></div>
+      </div>
+      <div class="leaderboard-card">
+        <h3>W/kg Rankings</h3>
+        <div id="wkg-rankings"></div>
+      </div>
+    </div>
+
+    <div class="full-row">
+      <div class="leaderboard-card">
+        <h3>Race Calendar</h3>
+        <div id="calendar"></div>
+      </div>
+    </div>
+
+    <p class="data-attribution" style="padding: 0 30px; margin-bottom: 8px;">Rankings and calendar data sourced from the <a href="https://www.uci.org" target="_blank" rel="noopener">UCI</a> and edited for display purposes.</p>
+
+    <div class="upload-panel">
+      <span class="upload-label">Update Rankings:</span>
+      <label class="upload-btn">Overall <input type="file" accept=".xlsx" onchange="handleUpload(this.files[0], 'overall')" hidden></label>
+      <label class="upload-btn">One Day <input type="file" accept=".xlsx" onchange="handleUpload(this.files[0], 'oneday')" hidden></label>
+      <label class="upload-btn">Stage <input type="file" accept=".xlsx" onchange="handleUpload(this.files[0], 'stage')" hidden></label>
+      <label class="upload-btn">VAM <input type="file" accept=".xlsx" onchange="handleUpload(this.files[0], 'vam')" hidden></label>
+      <label class="upload-btn">W/kg <input type="file" accept=".xlsx" onchange="handleUpload(this.files[0], 'wkg')" hidden></label>
+      <label class="upload-btn">Calendar <input type="file" accept=".xlsx" onchange="handleUpload(this.files[0], 'calendar')" hidden></label>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="cycling.js"></script>
+    <script src="../script.js"></script>
+  
+  </body>
+</html>

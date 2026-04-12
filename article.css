@@ -61,3 +61,25 @@ footer {
 .toc a:hover {
   text-decoration: underline;
 }
+
+.download-btn {
+  display: inline-block;
+  background-color: #e94560;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.download-btn:hover {
+  background-color: #c73652;
+}
+
+iframe {
+  border: none;
+  border-radius: 8px;
+}
+
+

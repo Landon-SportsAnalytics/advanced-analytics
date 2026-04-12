@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ':*)",
+      "Bash(rerun:'b1')",
+      "WebFetch(domain:statsapi.mlb.com)",
+      "Bash(python3)",
+      "Bash(python3 -c ':*)"
+    ]
+  }
+}

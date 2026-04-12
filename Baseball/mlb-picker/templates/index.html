@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}MLB Picker – {{ game_date }}{% endblock %}
+
+{% block content %}
+<!-- Week day tabs -->
+<div class="week-tabs">
+  {% for day in week_dates %}
+    <a href="{{ url_for('index') if day.date == today_iso else url_for('games_on_date', game_date=day.date) }}"
+       class="week-tab {% if day.date == game_date %}active{% endif %}">
+      {{ day.label }}
+    </a>
+  {% endfor %}
+</div>
+
+<div class="page-header">
+  <h1>
+    {% if is_today %}
+      Today's Games
+    {% else %}
+      Games on {{ game_date }}
+    {% endif %}
+  </h1>
+  {% if is_today %}
+    <form method="POST" action="/update-results">
+      <button type="submit" class="btn btn-ghost">↻ Check Scores</button>
+    </form>
+  {% endif %}
+</div>
+
+{% if not games %}
+  <div class="empty-state">
+    <h2>No games found</h2>
+    <p>
+      {% if is_today %}
+        Could not load today's schedule. The MLB API may be unavailable or there are no games today.
+      {% else %}
+        No games found for {{ game_date }}.
+      {% endif %}
+    </p>
+  </div>
+{% else %}
+  <div class="games-grid">
+    {% for game in games %}
+      {% include "partials/game_card.html" %}
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

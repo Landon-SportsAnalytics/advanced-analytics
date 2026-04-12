@@ -1,0 +1,186 @@
+{% set pick = picks_by_game_pk.get(game['game_pk']) %}
+{% set is_final = game['status'] == 'Final' %}
+{% set is_live = game['status'] == 'Live' %}
+
+{% if is_final and game['away_score'] is not none and game['home_score'] is not none %}
+  {% set away_winner = game['away_score'] > game['home_score'] %}
+  {% set home_winner = game['home_score'] > game['away_score'] %}
+{% else %}
+  {% set away_winner = false %}
+  {% set home_winner = false %}
+{% endif %}
+
+{% set vid = game['venue_id'] if 'venue_id' in game.keys() else none %}
+{% set venue = venues.get(vid) if vid else none %}
+{% set away_lineup = game['away_lineup']|from_json %}
+{% set home_lineup = game['home_lineup']|from_json %}
+
+<div class="game-card status-{{ game['status']|lower }}" id="game-{{ game['game_pk'] }}">
+
+  <!-- Header: status badge, time, venue -->
+  <div class="game-header">
+    {% if is_final %}
+      <span class="status-badge badge-final">Final</span>
+    {% elif is_live %}
+      <span class="status-badge badge-live">Live</span>
+    {% else %}
+      <span class="status-badge badge-preview">{{ game['game_time_utc']|local_time }}</span>
+    {% endif %}
+    <span>{{ game['venue_name'] }}</span>
+  </div>
+
+  <div class="game-body">
+
+    <!-- ── Matchup ──────────────────────────────────────── -->
+    <div class="matchup">
+
+      <!-- Away team -->
+      <div class="team away">
+        <div class="team-row">
+          <span class="team-abbr">{{ game['away_team_abbr'] }}</span>
+          {% if is_final %}
+            <span class="team-score {% if away_winner %}winner{% else %}loser{% endif %}">
+              {{ game['away_score'] }}
+            </span>
+          {% endif %}
+        </div>
+        <span class="team-name">{{ game['away_team_name'] }}</span>
+        <span class="team-record">({{ game['away_wins'] }}-{{ game['away_losses'] }})</span>
+        <!-- Away pitcher -->
+        {% if game['away_pitcher'] %}
+          <div class="pitcher-row" style="margin-top:4px;">
+            <span class="pitcher-name">{{ game['away_pitcher'] }}</span>
+            {% if game['away_pitcher_wins'] is not none %}
+              <span class="pitcher-stat">{{ game['away_pitcher_wins'] }}-{{ game['away_pitcher_losses'] }}</span>
+              <span class="pitcher-era">{{ game['away_pitcher_era'] or '-.--' }} ERA</span>
+            {% endif %}
+          </div>
+        {% else %}
+          <span class="team-pitcher" style="margin-top:4px;">SP: TBD</span>
+        {% endif %}
+      </div>
+
+      <!-- Divider -->
+      <div class="vs-divider">@</div>
+
+      <!-- Home team -->
+      <div class="team home">
+        <div class="team-row">
+          {% if is_final %}
+            <span class="team-score {% if home_winner %}winner{% else %}loser{% endif %}">
+              {{ game['home_score'] }}
+            </span>
+          {% endif %}
+          <span class="team-abbr">{{ game['home_team_abbr'] }}</span>
+        </div>
+        <span class="team-name">{{ game['home_team_name'] }}</span>
+        <span class="team-record">({{ game['home_wins'] }}-{{ game['home_losses'] }})</span>
+        {% if game['home_pitcher'] %}
+          <div class="pitcher-row" style="margin-top:4px;">
+            <span class="pitcher-era">{{ game['home_pitcher_era'] or '-.--' }} ERA</span>
+            {% if game['home_pitcher_wins'] is not none %}
+              <span class="pitcher-stat">{{ game['home_pitcher_wins'] }}-{{ game['home_pitcher_losses'] }}</span>
+            {% endif %}
+            <span class="pitcher-name">{{ game['home_pitcher'] }}</span>
+          </div>
+        {% else %}
+          <span class="team-pitcher" style="margin-top:4px;">SP: TBD</span>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- ── Pick section ─────────────────────────────────── -->
+    <div class="pick-section">
+      {% if pick %}
+        <div class="pick-made">
+          <span class="pick-label">Your pick:</span>
+          <span class="pick-team">{{ pick['picked_team_name'] }}</span>
+          {% if pick['result'] %}
+            <span class="result-badge result-{{ pick['result'] }}">{{ pick['result'] }}</span>
+          {% else %}
+            <span class="result-badge result-pending">Pending</span>
+            {% if not is_final and game_date >= today_iso %}
+              <form method="POST" action="/unpick" style="display:inline;">
+                <input type="hidden" name="game_pk" value="{{ game['game_pk'] }}">
+                <input type="hidden" name="game_date" value="{{ game_date }}">
+                <input type="hidden" name="anchor" value="game-{{ game['game_pk'] }}">
+                <button type="submit" class="btn btn-undo">Undo</button>
+              </form>
+            {% endif %}
+          {% endif %}
+        </div>
+      {% elif not is_final and game_date >= today_iso %}
+        <form method="POST" action="/pick" class="pick-buttons">
+          <input type="hidden" name="game_pk" value="{{ game['game_pk'] }}">
+          <input type="hidden" name="game_date" value="{{ game_date }}">
+          <input type="hidden" name="anchor" value="game-{{ game['game_pk'] }}">
+          <button type="submit" name="picked_team_id" value="{{ game['away_team_id'] }}" class="btn btn-pick">
+            Pick {{ game['away_team_abbr'] }}
+          </button>
+          <button type="submit" name="picked_team_id" value="{{ game['home_team_id'] }}" class="btn btn-pick">
+            Pick {{ game['home_team_abbr'] }}
+          </button>
+        </form>
+      {% elif is_final and not pick %}
+        <span style="font-size:13px; color: var(--text-muted);">No pick made</span>
+      {% endif %}
+    </div>
+
+    <!-- ── Lineups (collapsible) ─────────────────────────── -->
+    <details class="card-section">
+      <summary>Lineups</summary>
+      {% if away_lineup or home_lineup %}
+        <div class="lineup-grid">
+          <div class="lineup-side">
+            <div class="lineup-header">{{ game['away_team_abbr'] }}</div>
+            {% if away_lineup %}
+              {% for p in away_lineup %}
+                <div class="lineup-item">
+                  <span class="lineup-num">{{ loop.index }}.</span>
+                  <span class="lineup-pos">{{ p['position'] or '—' }}</span>
+                  <span class="lineup-name">{{ p['name'] }}</span>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div style="font-size:13px;color:var(--text-muted);padding-top:6px;">TBA</div>
+            {% endif %}
+          </div>
+          <div class="lineup-side">
+            <div class="lineup-header">{{ game['home_team_abbr'] }}</div>
+            {% if home_lineup %}
+              {% for p in home_lineup %}
+                <div class="lineup-item">
+                  <span class="lineup-num">{{ loop.index }}.</span>
+                  <span class="lineup-pos">{{ p['position'] or '—' }}</span>
+                  <span class="lineup-name">{{ p['name'] }}</span>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div style="font-size:13px;color:var(--text-muted);padding-top:6px;">TBA</div>
+            {% endif %}
+          </div>
+        </div>
+      {% else %}
+        <div style="font-size:13px;color:var(--text-muted);padding-top:10px;">
+          Lineups not yet available
+        </div>
+      {% endif %}
+    </details>
+
+    <!-- ── Field dimensions (collapsible) ───────────────── -->
+    <details class="card-section">
+      <summary>Field Dimensions</summary>
+      <div class="field-wrap">
+        {{ svgs[game['game_pk']] | safe }}
+        {% if venue and venue['roof_type'] %}
+          <div class="field-meta">
+            {% if venue['roof_type'] %}Roof: {{ venue['roof_type'] }}{% endif %}
+            {% if venue['turf_type'] %} · Surface: {{ venue['turf_type'] }}{% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </details>
+
+  </div>
+</div>
