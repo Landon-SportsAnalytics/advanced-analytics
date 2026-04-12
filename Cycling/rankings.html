@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Cycling Rankings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="cycling.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      .rankings-page {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px;
+      }
+
+      .rankings-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #1a1a2e;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+
+      .rankings-back:hover {
+        color: #e94560;
+      }
+
+      .rankings-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+      }
+
+      .rankings-tab {
+        padding: 8px 18px;
+        border-radius: 6px;
+        border: 1px solid #e0e0e0;
+        background: white;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        color: #1a1a2e;
+        text-decoration: none;
+      }
+
+      .rankings-tab:hover {
+        background: #f0f0f0;
+      }
+
+      .rankings-tab.active {
+        background: #1a1a2e;
+        color: white;
+        border-color: #1a1a2e;
+      }
+
+      .rankings-card {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e0e0e0;
+        padding: 24px;
+      }
+
+      .rankings-card h2 {
+        margin: 0 0 20px 0;
+        color: #1a1a2e;
+        font-size: 20px;
+      }
+
+      .rankings-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      .rankings-table thead tr {
+        border-bottom: 2px solid #e94560;
+      }
+
+      .rankings-table th {
+        padding: 10px 8px;
+        color: #1a1a2e;
+        font-weight: 700;
+        text-align: left;
+      }
+
+      .rankings-table th.stat-col {
+        text-align: right;
+      }
+
+      .rankings-table tbody tr {
+        border-bottom: 0.5px solid #e0e0e0;
+      }
+
+      .rankings-table tbody tr:nth-child(even) {
+        background: #f9f9f9;
+      }
+
+      .rankings-table tbody tr:hover {
+        background: #f0f4ff;
+      }
+
+      .rankings-table td {
+        padding: 10px 8px;
+      }
+
+      .rankings-table td.pos {
+        font-weight: 600;
+        color: #e94560;
+        width: 48px;
+      }
+
+      .rankings-table td.name {
+        font-weight: 500;
+      }
+
+      .rankings-table td.team {
+        color: #666;
+        font-size: 13px;
+      }
+
+      .rankings-table td.stat {
+        text-align: right;
+        font-weight: 600;
+      }
+
+      #rankings-status {
+        color: #888;
+        font-size: 14px;
+        padding: 20px 0;
+      }
+    </style>
+  </head>
+  <body id="top">
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#sports">Sports</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+
+    <header id="hero">
+      <h1>Cycling Rankings</h1>
+      <p class="title-text">Full UCI ranking tables from the professional peloton.</p>
+    </header>
+
+    <div class="rankings-page">
+      <a href="index.html" class="rankings-back">&#8592; Back to Cycling</a>
+
+      <div class="rankings-tabs" id="rankings-tabs"></div>
+
+      <div class="rankings-card">
+        <h2 id="rankings-title"></h2>
+        <div id="rankings-status"></div>
+        <table class="rankings-table" id="rankings-table" style="display:none;">
+          <thead>
+            <tr>
+              <th>Pos</th>
+              <th>Rider</th>
+              <th>Team</th>
+              <th class="stat-col" id="rankings-stat-header"></th>
+            </tr>
+          </thead>
+          <tbody id="rankings-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+      const RANKING_TYPES = [
+        { key: 'overall',  label: 'Overall',  csv: 'data/overall.csv',  statKey: 'points', statLabel: 'Points' },
+        { key: 'oneday',   label: 'One Day',  csv: 'data/oneday.csv',   statKey: 'points', statLabel: 'Points' },
+        { key: 'stage',    label: 'Stage',    csv: 'data/stage.csv',    statKey: 'points', statLabel: 'Points' },
+        { key: 'vam',      label: 'VAM',      csv: 'data/vam.csv',      statKey: 'vam',    statLabel: 'VAM'    },
+        { key: 'wkg',      label: 'W/kg',     csv: 'data/wkg.csv',      statKey: 'wkg',    statLabel: 'W/kg'   },
+      ];
+
+      const FALLBACK_MAP = {
+        overall: { data: () => cyclingData.overall, statKey: 'points' },
+        oneday:  { data: () => cyclingData.oneDay,  statKey: 'points' },
+        stage:   { data: () => cyclingData.stage,   statKey: 'points' },
+        vam:     { data: () => cyclingData.vam,     statKey: 'vam'    },
+        wkg:     { data: () => cyclingData.wkg,     statKey: 'wkg'    },
+      };
+
+      function parseCSV(text) {
+        const lines = text.trim().split('\n').map(line => {
+          const cells = [];
+          let cur = '', inQuote = false;
+          for (const ch of line) {
+            if (ch === '"') { inQuote = !inQuote; }
+            else if (ch === ',' && !inQuote) { cells.push(cur.trim()); cur = ''; }
+            else { cur += ch; }
+          }
+          cells.push(cur.trim());
+          return cells;
+        });
+        const headers = lines[0].map(h => h.replace(/"/g, '').toLowerCase());
+        return lines.slice(1)
+          .filter(cells => cells.some(c => c))
+          .map(cells => Object.fromEntries(headers.map((h, i) => [h, (cells[i] || '').replace(/"/g, '')])));
+      }
+
+      function buildTabs(activeKey) {
+        const container = document.getElementById('rankings-tabs');
+        container.innerHTML = RANKING_TYPES.map(t => `
+          <a href="rankings.html?type=${t.key}"
+             class="rankings-tab${t.key === activeKey ? ' active' : ''}">
+            ${t.label}
+          </a>
+        `).join('');
+      }
+
+      function renderTable(rows, statKey) {
+        const tbody = document.getElementById('rankings-tbody');
+        tbody.innerHTML = rows.map(row => `
+          <tr>
+            <td class="pos">${row.pos}</td>
+            <td class="name">${row.name}</td>
+            <td class="team">${row.team}</td>
+            <td class="stat">${row[statKey] || '—'}</td>
+          </tr>
+        `).join('');
+        document.getElementById('rankings-table').style.display = '';
+        document.getElementById('rankings-status').textContent = '';
+      }
+
+      async function loadRanking(type) {
+        const config = RANKING_TYPES.find(t => t.key === type) || RANKING_TYPES[0];
+        buildTabs(config.key);
+        document.getElementById('rankings-title').textContent = `${config.label} Rankings`;
+        document.getElementById('rankings-stat-header').textContent = config.statLabel;
+        document.getElementById('rankings-status').textContent = 'Loading…';
+        document.getElementById('rankings-table').style.display = 'none';
+
+        try {
+          const res = await fetch(config.csv);
+          if (!res.ok) throw new Error('CSV not found');
+          const rows = parseCSV(await res.text());
+          renderTable(rows, config.statKey);
+        } catch (e) {
+          const fallback = FALLBACK_MAP[config.key];
+          if (fallback) {
+            renderTable(fallback.data(), fallback.statKey);
+          } else {
+            document.getElementById('rankings-status').textContent = 'Rankings data unavailable.';
+          }
+        }
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const type = params.get('type') || 'overall';
+      loadRanking(type);
+    </script>
+    <script src="../script.js"></script>
+  </body>
+</html>

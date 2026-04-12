@@ -23,6 +23,9 @@ function buildLeaderboard(data, columns) {
         `).join('')}
       </tbody>
     </table>
+    <div style="text-align:right; margin-top:10px;">
+      <a href="rankings.html?type=${columns.rankingType}" style="font-size:13px; color:#e94560; text-decoration:none; font-weight:600;">View full rankings &#8594;</a>
+    </div>
   `;
 }
 
@@ -167,11 +170,11 @@ function toRankingRows(rows, statKey) {
 }
 
 function renderAll(data) {
-  document.getElementById('overall-rankings').innerHTML = buildLeaderboard(data.overall, { statLabel: 'Points', statKey: 'points' });
-  document.getElementById('oneday-rankings').innerHTML  = buildLeaderboard(data.oneDay,  { statLabel: 'Points', statKey: 'points' });
-  document.getElementById('stage-rankings').innerHTML   = buildLeaderboard(data.stage,   { statLabel: 'Points', statKey: 'points' });
-  document.getElementById('vam-rankings').innerHTML     = buildLeaderboard(data.vam,     { statLabel: 'VAM',    statKey: 'vam'    });
-  document.getElementById('wkg-rankings').innerHTML     = buildLeaderboard(data.wkg,     { statLabel: 'W/kg',   statKey: 'wkg'    });
+  document.getElementById('overall-rankings').innerHTML = buildLeaderboard(data.overall, { statLabel: 'Points', statKey: 'points', rankingType: 'overall' });
+  document.getElementById('oneday-rankings').innerHTML  = buildLeaderboard(data.oneDay,  { statLabel: 'Points', statKey: 'points', rankingType: 'oneday'  });
+  document.getElementById('stage-rankings').innerHTML   = buildLeaderboard(data.stage,   { statLabel: 'Points', statKey: 'points', rankingType: 'stage'   });
+  document.getElementById('vam-rankings').innerHTML     = buildLeaderboard(data.vam,     { statLabel: 'VAM',    statKey: 'vam',    rankingType: 'vam'     });
+  document.getElementById('wkg-rankings').innerHTML     = buildLeaderboard(data.wkg,     { statLabel: 'W/kg',   statKey: 'wkg',    rankingType: 'wkg'     });
   document.getElementById('calendar').innerHTML = buildCalendar();
 }
 
