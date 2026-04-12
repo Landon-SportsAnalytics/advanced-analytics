@@ -5,7 +5,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   padding: 30px;
-  max-width: 1100px;
+  max-width: 100%;
   width: 100%;
   box-sizing: border-box;
   margin: 0 auto;
